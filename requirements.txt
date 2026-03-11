@@ -1,0 +1,13 @@
+numpy
+pandas
+matplotlib
+scikit-learn
+statsmodels
+prophet
+torch
+datasets
+transformers
+tqdm
+jupyter
+notebook
+ipykernel

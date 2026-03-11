@@ -205,3 +205,29 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Data files (very important for ML projects)
+data/raw/*
+!data/raw/.gitkeep
+
+data/processed/*
+!data/processed/.gitkeep
+
+*.csv
+*.parquet
+*.h5
+*.hdf5
+*.feather
+*.pkl
+*.joblib
+*.pt
+*.pth
+
+# Experiment outputs
+results/
+outputs/
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
