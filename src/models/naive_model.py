@@ -9,14 +9,13 @@ This module provides:
 """
 
 from __future__ import annotations
-
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
 from src.evaluation.metrics import evaluate_forecast
-
+from src.models.base_model import BaseForecastModel
 
 def naive_forecast(train_values: list[float], horizon: int) -> np.ndarray:
     """
@@ -256,3 +255,51 @@ def summarize_results(results_df: pd.DataFrame) -> pd.DataFrame:
         .reset_index(drop=True)
     )
     return summary
+
+class NaiveModel(BaseForecastModel):
+    """
+    Last-value naive forecast.
+    """
+
+    name = "naive"
+
+    def __init__(self) -> None:
+        self.train_values: list[float] | None = None
+
+    def fit(self, train_values: list[float]) -> None:
+        if len(train_values) == 0:
+            raise ValueError("train_values must not be empty")
+        self.train_values = train_values
+
+    def predict(self, horizon: int) -> list[float]:
+        if self.train_values is None:
+            raise ValueError("Model must be fitted before prediction")
+        return naive_forecast(self.train_values, horizon).tolist()
+
+class SeasonalNaiveModel(BaseForecastModel):
+    """
+    Seasonal naive forecast.
+    """
+
+    name = "seasonal_naive"
+
+    def __init__(self, seasonal_period: int) -> None:
+        self.seasonal_period = seasonal_period
+        self.train_values: list[float] | None = None
+
+    def fit(self, train_values: list[float]) -> None:
+        if len(train_values) == 0:
+            raise ValueError("train_values must not be empty")
+        self.train_values = train_values
+
+    def predict(self, horizon: int) -> list[float]:
+        if self.train_values is None:
+            raise ValueError("Model must be fitted before prediction")
+        return seasonal_naive_forecast(
+            self.train_values,
+            horizon,
+            self.seasonal_period,
+        ).tolist()
+
+    def get_params(self) -> dict[str, Any]:
+        return {"seasonal_period": self.seasonal_period}
