@@ -255,12 +255,13 @@ def infer_domain_from_dataset_key(dataset_key: str) -> str:
 def resolve_forecast_horizon(
     metadata: dict[str, Any],
     records_df: pd.DataFrame,
+    normalized_frequency: str | None = None,
     fallback_ratio: float = 0.1,
     min_horizon: int = 1,
     max_horizon: int | None = None,
 ) -> tuple[int, str]:
     """
-    Resolve the forecast horizon using metadata or a fallback rule.
+    Resolve the forecast horizon using metadata or a capped fallback rule.
 
     Parameters
     ----------
@@ -268,12 +269,14 @@ def resolve_forecast_horizon(
         Parsed TSF metadata.
     records_df : pd.DataFrame
         Parsed dataset records.
+    normalized_frequency : str | None
+        Normalized frequency label.
     fallback_ratio : float
         Ratio of the shortest series length used for fallback horizon.
     min_horizon : int
         Minimum allowed fallback horizon.
     max_horizon : int | None
-        Optional cap for fallback horizon.
+        Optional global cap for fallback horizon.
 
     Returns
     -------
@@ -282,6 +285,7 @@ def resolve_forecast_horizon(
     """
     metadata_horizon = metadata.get("horizon")
 
+    # Preserve dataset metadata horizon as-is if valid.
     if metadata_horizon is not None:
         try:
             metadata_horizon = int(metadata_horizon)
@@ -298,6 +302,9 @@ def resolve_forecast_horizon(
 
     fallback_horizon = max(min_horizon, int(shortest_length * fallback_ratio))
 
+    frequency_cap = get_frequency_horizon_cap(normalized_frequency)
+    fallback_horizon = min(fallback_horizon, frequency_cap)
+
     if max_horizon is not None:
         fallback_horizon = min(fallback_horizon, max_horizon)
 
@@ -307,7 +314,7 @@ def resolve_forecast_horizon(
     if fallback_horizon <= 0:
         raise ValueError("Resolved forecast horizon is not valid")
 
-    return fallback_horizon, "fallback_ratio"
+    return fallback_horizon, "fallback_capped"
 
 
 def ensure_series_identifier(records_df: pd.DataFrame) -> pd.DataFrame:
@@ -388,6 +395,7 @@ def load_monash_dataset(
     resolved_horizon, horizon_strategy = resolve_forecast_horizon(
         metadata=metadata,
         records_df=records_df,
+        normalized_frequency=normalized_frequency,
         fallback_ratio=fallback_ratio,
         min_horizon=min_horizon,
         max_horizon=max_horizon,
@@ -495,3 +503,37 @@ def build_dataset_summary(
             )
 
     return pd.DataFrame(rows).sort_values("dataset_key").reset_index(drop=True)
+
+def get_frequency_horizon_cap(normalized_frequency: str | None) -> int:
+    """
+    Return a practical maximum fallback horizon for a given normalized frequency.
+
+    These caps are only used when dataset metadata does not provide a horizon.
+    They are intended to keep experiments computationally reasonable while still
+    allowing meaningful forecasting windows.
+
+    Parameters
+    ----------
+    normalized_frequency : str | None
+        Normalized frequency label.
+
+    Returns
+    -------
+    int
+        Maximum fallback horizon.
+    """
+    cap_map = {
+        "yearly": 8,
+        "quarterly": 8,
+        "monthly": 24,
+        "weekly": 26,
+        "daily": 30,
+        "hourly": 168,
+        "half_hourly": 336,
+        "10_minutes": 144,
+        "minutely": 120,
+        "4_seconds": 60,
+        "seconds": 60,
+    }
+
+    return cap_map.get(normalized_frequency, 24)
