@@ -29,6 +29,8 @@ from src.models.naive_model import (
     infer_seasonal_period,
 )
 
+from src.data.project_config import SELECTED_DATASETS
+
 
 def run_naive_benchmarks(
     base_dir: str | Path = DEFAULT_MONASH_BASE_DIR,
@@ -77,8 +79,8 @@ def run_naive_benchmarks(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    dataset_keys = list_available_datasets(base_dir)
-
+    dataset_keys = SELECTED_DATASETS.copy()
+    
     if include_datasets is not None:
         include_set = set(include_datasets)
         dataset_keys = [key for key in dataset_keys if key in include_set]

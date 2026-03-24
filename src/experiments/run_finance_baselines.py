@@ -17,13 +17,7 @@ from src.evaluation.benchmarking import (
 from src.models.arima_model import ARIMAModel
 from src.models.prophet_model import ProphetModel
 
-
-FINANCE_DATASETS = [
-    "bitcoin",
-    "fred_md",
-    "m4_quarterly",
-]
-
+from src.data.project_config import FINANCE_DATASETS
 
 def run_finance_baselines(
     output_dir: str | Path = "results/tables/finance_baselines",
