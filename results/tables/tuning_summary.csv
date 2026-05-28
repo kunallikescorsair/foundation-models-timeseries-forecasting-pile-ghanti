@@ -1,0 +1,9 @@
+model,model_family,mean_smape_improvement,median_smape_improvement,improved_tasks,worsened_tasks,unchanged_tasks,evaluated_tasks
+lstm,traditional,12.190145849740961,8.609025470213975,16,2,0,18
+uni2ts,foundation,0.31749592818148137,0.0434997681210767,11,7,0,18
+naive,traditional,0.0,0.0,0,0,18,18
+seasonal_naive,traditional,0.0,0.0,0,0,18,18
+timesfm,foundation,0.0,0.0,0,0,18,18
+ttm,foundation,-0.3173553574939314,0.0,5,5,4,14
+prophet,traditional,-5.1539121879509695,0.22080590222175012,11,7,0,18
+arima,traditional,-11.122880135528007,0.4429940430175332,11,7,0,18

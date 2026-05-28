@@ -1,0 +1,6 @@
+model,model_family,baseline_wins
+timesfm,foundation,11
+naive,traditional,4
+arima,traditional,1
+lstm,traditional,1
+ttm,foundation,1

@@ -1,0 +1,5 @@
+model,model_family,tuned_wins
+timesfm,foundation,12
+naive,traditional,4
+arima,traditional,1
+uni2ts,foundation,1

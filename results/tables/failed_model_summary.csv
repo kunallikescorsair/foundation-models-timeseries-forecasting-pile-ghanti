@@ -1,0 +1,5 @@
+model,experiment_type,failed_runs
+ttm,baseline,6190
+ttm,tuned,6190
+timesfm,baseline,33
+timesfm,tuned,33
