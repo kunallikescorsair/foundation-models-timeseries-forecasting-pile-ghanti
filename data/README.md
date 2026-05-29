@@ -17,3 +17,5 @@ The final selected datasets are:
 - `car_parts`
 - `nn5_daily`
 - `nn5_weekly`
+
+The project notebooks can also download or locate the forecasting subset using Hugging Face Hub.
