@@ -1,6 +1,6 @@
 # Evaluating Foundation Models for Time Series Forecasting on the Time Series PILE
 
-This repository contains the cleaned benchmarking code, notebooks, and final result summaries for a UTS capstone project evaluating time series foundation models on selected datasets from the Time Series PILE.
+This repository contains the benchmarking framework, experiment notebooks, reusable source code, and final results from a UTS capstone project evaluating time series foundation models on selected datasets from the Time Series PILE.
 
 ## Project Overview
 
@@ -16,6 +16,15 @@ The project evaluates:
 * Runtime efficiency
 * Peak memory usage
 * Model reliability and failed runs
+
+## Results at a Glance
+
+- Evaluated 8 forecasting models across 9 datasets spanning finance, energy, and retail.
+- Benchmarked each dataset under short- and long-horizon forecasting settings.
+- TimesFM was the most consistent model overall across the selected dataset-horizon tasks.
+- Naive and ARIMA remained competitive on several simpler or repetitive datasets.
+- TimesFM provided a strong balance between forecasting accuracy and computational scalability.
+- TTM showed benefits after adaptation on selected NN5 retail datasets but also experienced reliability issues in some settings.
 
 ## Models Evaluated
 
